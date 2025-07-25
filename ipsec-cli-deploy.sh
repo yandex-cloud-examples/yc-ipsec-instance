@@ -8,9 +8,9 @@
 # =========================
 # IPsec Instance parameters
 # =========================
-VM_NAME=ipsec-instance
-SG_NAME=ipsec-instance-sg
-RT_NAME=ipsec-instance-rt
+VM_NAME=ipsec-gateway
+SG_NAME=ipsec-gateway-sg
+RT_NAME=ipsec-gateway-rt
 
 ZONE=ru-central1-d
 PLATFORM=standard-v3
