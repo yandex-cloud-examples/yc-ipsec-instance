@@ -15,37 +15,37 @@
 
 Развернуть `IPsec Instance` в формате одной виртуальной машины для организации сетевой IP-связности между ресурсами в `Yandex Cloud` и ресурсами на удаленной площадке.
 
-Примечание: В данном развертывании резервирование (отказоустойчивость) `IPsec instance` не предусматривается.
+Примечание: В данном развертывании резервирование (отказоустойчивость) `IPsec Instance` не предусматривается.
 
-## Сетевая Топология развертывания <a id="topology"/></a>
+## Топология развертывания <a id="topology"/></a>
 
 Типовая схема организации связи между Yandex Cloud и удаленной площадкой (на схеме обозначена как `Remote site`) представлена на схеме ниже.
 
 <p align="left">
-    <img src="./ipsec-diagram.svg" alt="Yandex Cloud IPsec instance diagram" width="800"/>
+    <img src="./ipsec-diagram.svg" alt="Yandex Cloud IPsec Instance diagram" width="800"/>
 </p>
 
 ## Требования к облачным ресурсам <a id="resources"/></a>
 
-Развертывание `IPsec instance` предполагается в уже существующей инфраструктуре Yandex Cloud. Перед началом развёртывания необходимо убедиться, что в вашей облачной инфраструктуре в Yandex Cloud уже созданы следующие ресурсы:
+Развертывание `IPsec Instance` предполагается в уже существующей инфраструктуре Yandex Cloud. Перед началом развёртывания необходимо убедиться, что в вашей облачной инфраструктуре в Yandex Cloud уже созданы следующие ресурсы:
 * [Облако](https://yandex.cloud/docs/resource-manager/operations/cloud/create)
 * [Каталог облачных ресурсов](https://yandex.cloud/docs/resource-manager/operations/folder/create)
-* Две **отдельных** [VPC сети](https://yandex.cloud/docs/vpc/operations/network-create) с [подсетями](https://yandex.cloud/docs/vpc/operations/subnet-create) для подключения внешнего (`outside`) и внутреннего (`inside`) сетевых интерфейсов IPsec instance. Совмещать `outside` и `inside` трафик на одном сетевом интерфейсе в данном развертывании не рекомендуется. На схеме сети VPC и их подсети обозначены следующим образом:
+* Две **отдельных** [VPC сети](https://yandex.cloud/docs/vpc/operations/network-create) с [подсетями](https://yandex.cloud/docs/vpc/operations/subnet-create) для подключения внешнего (`outside`) и внутреннего (`inside`) сетевых интерфейсов IPsec Instance. Совмещать `outside` и `inside` трафик на одном сетевом интерфейсе в данном развертывании не рекомендуется. На схеме сети VPC и их подсети обозначены следующим образом:
     * сеть `outside-net` с подсетью `outside-subnet`
     * сеть `inside-net` с подсетями `subnet-1`, `subnet-2` и `subnet-N`
 
-В процессе развертывания `IPsec instance` в облачной инфраструктуре дополнительно будут созданы следующие ресурсы:
-* [Статический публичный IP-адрес](https://yandex.cloud/docs/vpc/concepts/address#public-addresses) (на схеме `public-ip-1`), который будет использоваться для отправки в Интернет и получения из Интернет трафика сетевого интерфейса `outside` IPsec instance.
-* [Группа безопасности](https://yandex.cloud/docs/vpc/concepts/security-groups) для сетевого интерфейса `outside` IPsec instance.
-* [Виртуальная машина](https://yandex.cloud/docs/compute/concepts/vm) (на схеме `IPsec instance`) на базе решения [strongSwan](https://docs.strongswan.org/docs/5.9/index.html), которая будет обеспечивать работу IPsec соединения с удаленной площадкой, а также маршрутизацию сетевого трафика между ресурсами в Yandex Cloud и удаленной площадкой.
-* [Таблица маршрутизации VPC](https://yandex.cloud/docs/vpc/concepts/routing#rt-vpc), которая обеспечивает маршрутизацию трафика в нужных подсетях в Yandex Cloud к подсетям на удаленной площадке через `IPsec instance`. На схеме обозначена как `ipsec-rt`.
+В процессе развертывания `IPsec Instance` в облачной инфраструктуре дополнительно будут созданы следующие ресурсы:
+* [Статический публичный IP-адрес](https://yandex.cloud/docs/vpc/concepts/address#public-addresses) (на схеме `public-ip-1`), который будет использоваться для отправки в Интернет и получения из Интернет трафика сетевого интерфейса `outside` IPsec Instance.
+* [Группа безопасности](https://yandex.cloud/docs/vpc/concepts/security-groups) для сетевого интерфейса `outside` IPsec Instance.
+* [Виртуальная машина](https://yandex.cloud/docs/compute/concepts/vm) (на схеме `IPsec Instance`) на базе решения [strongSwan](https://docs.strongswan.org/docs/5.9/index.html), которая будет обеспечивать работу IPsec соединения с удаленной площадкой, а также маршрутизацию сетевого трафика между ресурсами в Yandex Cloud и удаленной площадкой.
+* [Таблица маршрутизации VPC](https://yandex.cloud/docs/vpc/concepts/routing#rt-vpc), которая обеспечивает маршрутизацию трафика в нужных подсетях в Yandex Cloud к подсетям на удаленной площадке через `IPsec Instance`. На схеме обозначена как `ipsec-rt`.
 
 ## Особенности развертывания <a id="notes"/></a>
 
-* ВМ с `IPsec instance` развертывается в одной из [зон доступности](https://yandex.cloud/docs/overview/concepts/geo-scope), на схеме `ru-central1-d`. Сетевые интерфейсы `inside` и `outside` подключаются к подсетям в той же зоне доступности (на схеме это `subnet-1` и `outside-subnet` соответственно).
+* ВМ с `IPsec Instance` развертывается в одной из [зон доступности](https://yandex.cloud/docs/overview/concepts/geo-scope), на схеме `ru-central1-d`. Сетевые интерфейсы `inside` и `outside` подключаются к подсетям в той же зоне доступности (на схеме это `subnet-1` и `outside-subnet` соответственно).
 * При создании ВМ необходимо добавить в неё `два сетевых интерфейса` в следующем порядке: для `outside` трафика (eth0) и `inside` трафика (eth1). 
-* Передача параметров для настройки `IPsec instance` происходит с помощью [сервиса метаданных ВМ](https://yandex.cloud/docs/compute/concepts/metadata/sending-metadata). Список параметров зависит от выбранного инструмента развертывания (Web-UI, yc-CLI, Terraform).
-* Для направления сетевого трафика к подсетям на удаленной площадке из отдельной подсети в Yandex Cloud, необходимо привязать таблицу маршрутизации `ipsec-rt` к этой подсети. В противном случае трафик в `IPsec instance` направляться не будет.
+* Передача параметров для настройки `IPsec Instance` происходит с помощью [сервиса метаданных ВМ](https://yandex.cloud/docs/compute/concepts/metadata/sending-metadata). Список параметров зависит от выбранного инструмента развертывания (Web-UI, yc-CLI, Terraform).
+* Для направления сетевого трафика к подсетям на удаленной площадке из отдельной подсети в Yandex Cloud, необходимо привязать таблицу маршрутизации `ipsec-rt` к этой подсети. В противном случае трафик в `IPsec Instance` направляться не будет.
 
 ## Подготовка к развертыванию <a id="prep"/></a>
 
@@ -53,8 +53,8 @@
 * Название ВМ, например, `ipsec-instance`.
 * Зону доступности, где будет развертываться ВМ, например, `ru-central1-d`.
 * Названия подсетей для подключения сетевых интерфейсов ВМ `inside` и `outside`.
-* Список подсетей, трафик из которых нужно будет маршрутизировать через `IPsec instance`.
-* Название таблицы маршрутизации VPC с помощью которой трафик будет маршрутизироваться к `IPsec instance`.
+* Список подсетей, трафик из которых нужно будет маршрутизировать через `IPsec Instance`.
+* Название таблицы маршрутизации VPC с помощью которой трафик будет маршрутизироваться к `IPsec Instance`.
 * Кол-во ресурсов ВМ (CPU, RAM) для ВМ. В большинстве случаев будет достаточно `2 vCPU и 4GB RAM`.
 * Образ для развертывания `ipsec-instance-ubuntu`.
 * Название для группы безопасности `outside` интерфейса ВМ и состав правил в ней. Пример конфигурации группы безопасности в формате YC-CLI:
@@ -90,7 +90,7 @@
     * `r_timeout`, `r_tries`, `r_base` - параметры [Retransmission timeouts](https://docs.strongswan.org/docs/latest/config/retransmission.html) для IPsec соединения.
 
 
-## Развертывание IPsec instance с помощью Web-UI <a id="web"/></a>
+## Развертывание IPsec Instance с помощью Web-UI <a id="web"/></a>
 
 1. [Зарезервировать выделенный статический IP-адрес](https://yandex.cloud/docs/vpc/operations/get-static-ip#console_1), на схеме обозначен как `public-ip-1`.
 
@@ -157,7 +157,7 @@ swanctl -L
 swanctl --log
 ```
 
-## Развертывание IPsec instance с помощью YC-CLI <a id="cli"/></a>
+## Развертывание IPsec Instance с помощью YC-CLI <a id="cli"/></a>
 
 1. Заполнить значения параметров развертывания в файле [ipsec-cli-deploy.sh](./ipsec-cli-deploy.sh)
 2. Подготовить окружение:
@@ -165,7 +165,7 @@ swanctl --log
     source env-yc.sh
     terraform init
     ```
-3. Выполнить развертывание `IPsec instance`:
+3. Выполнить развертывание `IPsec Instance`:
     ```bash
     ./ipsec-cli-deploy.sh
     ```
@@ -182,7 +182,7 @@ swanctl --log
 ```
 
 
-## Развертывание IPsec instance с помощью Terraform <a id="tf"/></a>
+## Развертывание IPsec Instance с помощью Terraform <a id="tf"/></a>
 
 1. Заполнить значения параметров развертывания в файле [terraform.tfvars](./terraform.tfvars)
 2. Подготовить окружение:
@@ -190,7 +190,7 @@ swanctl --log
     source env-yc.sh
     terraform init
     ```
-3. Выполнить развертывание `IPsec instance`:
+3. Выполнить развертывание `IPsec Instance`:
     ```bash
     terraform apply
     ```
