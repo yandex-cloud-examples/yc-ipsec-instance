@@ -1,7 +1,7 @@
 
-vm_name = "ipsec-instance"
-sg_name = "ipsec-instance-sg"
-rt_name = "ipsec-instance-rt"
+vm_name = "ipsec-gateway"
+sg_name = "ipsec-gateway-sg"
+rt_name = "ipsec-gateway-rt"
 
 vm_zone      = "ru-central1-a"
 vm_platform  = "standard-v3"

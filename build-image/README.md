@@ -1,6 +1,6 @@
 # Сборка образа strongSwan IPsec Instance
 
-Сборка образа для развёртывания IPsec Instance на базе решения [StrongSwan](https://github.com/strongswan/strongswan).
+Сборка образа для развёртывания `IPsec Instance` на базе решения [strongSwan](https://github.com/strongswan/strongswan).
 
 [Документация StrongSwan](https://docs.strongswan.org/docs/latest).
 

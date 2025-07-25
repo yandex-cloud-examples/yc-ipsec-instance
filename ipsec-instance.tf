@@ -1,5 +1,5 @@
 
-// Get VM image Id for SGW deployment
+// Get VM image Id for IPsec Instance deployment
 data "yandex_compute_image" "instance_image" {
   folder_id = var.folder_id
   family    = var.image_family
@@ -16,7 +16,7 @@ data "yandex_vpc_subnet" "inside" {
 }
 
 // Create VPC Route Table for route traffic
-// to remote subnets via IPsec instance (inside interface)
+// to remote subnets via IPsec Instance (inside interface)
 resource "yandex_vpc_route_table" "instance_rt" {
   folder_id  = var.folder_id
   name       = var.rt_name
@@ -31,7 +31,7 @@ resource "yandex_vpc_route_table" "instance_rt" {
   }
 }
 
-// Reserve a static IP for the outside interface of IPsec instance
+// Reserve a static IP for the outside interface of IPsec Instance
 resource "yandex_vpc_address" "instance_pub_ip" {
   folder_id = var.folder_id
   name      = var.pub_ip_name
@@ -40,11 +40,11 @@ resource "yandex_vpc_address" "instance_pub_ip" {
   }
 }
 
-// Create Security Group for outside interface of IPsec instance
+// Create Security Group for outside interface of IPsec Instance
 resource "yandex_vpc_security_group" "instance_sg" {
   folder_id   = var.folder_id
   name        = var.sg_name
-  description = "IPsec instance outside interface SG"
+  description = "IPsec Instance outside interface SG"
   network_id  = data.yandex_vpc_subnet.outside.network_id
 
   ingress {

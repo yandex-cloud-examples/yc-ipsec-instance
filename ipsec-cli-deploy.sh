@@ -33,7 +33,7 @@ export USER_SSH_KEY=$(cat ~/.ssh/id_ed25519.pub)
 # IPsec Connection parameters
 # ===========================
 export POLICY_NAME=yc-ipsec
-export REMOTE_IP=158.160.186.7
+export REMOTE_IP=x.x.x.x
 export PRESHARED_KEY="Sup@385paS4"
 export LOCAL_SUBNETS=192.168.1.0/24
 export REMOTE_SUBNETS=10.10.11.0/24,10.10.12.0/24

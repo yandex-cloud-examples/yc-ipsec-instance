@@ -50,7 +50,7 @@
 ## Подготовка к развертыванию <a id="prep"/></a>
 
 Перед выполнением развертывания необходимо определить его параметры:
-* Название ВМ, например, `ipsec-instance`.
+* Название ВМ, например, `ipsec-gateway`.
 * Зону доступности, где будет развертываться ВМ, например, `ru-central1-d`.
 * Названия подсетей для подключения сетевых интерфейсов ВМ `inside` и `outside`.
 * Список подсетей, трафик из которых нужно будет маршрутизировать через `IPsec Instance`.
@@ -142,104 +142,115 @@
     * Нажать на кнопку "Создать ВМ".
 
 6. После создания ВМ, подключиться к ней по SSH, используя публичный IP-адрес, и запустить настройку `IPsec`:
-```bash
-ssh oper@<public-ip-1>
-sudo -i
-/usr/local/bin/ipsec-config.sh
-```
-
-7. Проверить сетевую связность между локальными ресурсами (на схеме это подсети с CIDR 192.168.x.0/24) и удаленными ресурсами (на схеме это подсети с CIDR 10.10.x.0/24).
-
-8. В случае отсутствия сетевой связности между локальными и удаленными ресурсами необходимо провести диагностику состояния `IPsec` соединения: 
-```bash
-ssh oper@<public-ip-1>
-sudo -i
-swanctl -l
-swanctl -L
-swanctl --log
-```
-
-## Развертывание IPsec Instance с помощью YC-CLI <a id="cli"/></a>
-
-1. Загрузить развертывание из репозитория на [github.com](https://github.com/yandex-cloud-examples/yc-ipsec-instance):
-```bash
-git clone https://github.com/yandex-cloud-examples/yc-ipsec-instance.git
-```
-
-2. Перейти в папку с развертыванием 
-```bash
-cd yc-ipsec-instance
-```
-
-3. Заполнить значения параметров развертывания в файле [ipsec-cli-deploy.sh](./ipsec-cli-deploy.sh)
-
-4. Подготовить окружение:
     ```bash
-    source env-yc.sh
+    ssh oper@<public-ip-1>
+    sudo -i
+    /usr/local/bin/ipsec-config.sh
     ```
-5. Выполнить развертывание `IPsec Instance`:
-    ```bash
-    ./ipsec-cli-deploy.sh
-    ```
-
-6. Привязать созданную ранее таблицу маршрутизации VPC (на схеме обозначена как `ipsec-rt`) к нужным подсетям в сети `inside-net`.
 
 7. Проверить сетевую связность между локальными ресурсами (на схеме это подсети с CIDR 192.168.x.0/24) и удаленными ресурсами (на схеме это подсети с CIDR 10.10.x.0/24).
 
 8. В случае отсутствия сетевой связности между локальными и удаленными ресурсами необходимо подключиться к ВМ по SSH: 
+    ```bash
+    ssh oper@<public-ip-1>
+    ```
 
-```bash
-ssh oper@<public-ip-1>
-```
+    и провести диагностику состояния `IPsec` соединения с помощью команд:
 
-и провести диагностику состояния `IPsec` соединения с помощью команд:
+    ```bash
+    sudo -i
+    swanctl -l
+    swanctl -L
+    swanctl --log
+    ```
 
-```bash
-sudo -i
-swanctl -l
-swanctl -L
-swanctl --log
-```
+## Развертывание IPsec Instance с помощью YC-CLI <a id="cli"/></a>
+
+1. Если у вас еще нет интерфейса командной строки `YC-CLI`, [установите и инициализируйте его](https://yandex.cloud/docs/cli/quickstart#install).
+
+2. Загрузить развертывание из репозитория на [github.com](https://github.com/yandex-cloud-examples/yc-ipsec-instance):
+    ```bash
+    git clone https://github.com/yandex-cloud-examples/yc-ipsec-instance.git
+    ```
+
+3. Перейти в папку с развертыванием 
+    ```bash
+    cd yc-ipsec-instance
+    ```
+
+4. Заполнить значения параметров развертывания в файле [ipsec-cli-deploy.sh](./ipsec-cli-deploy.sh)
+
+5. Подготовить окружение:
+    ```bash
+    source env-yc.sh
+    ```
+
+6. Выполнить развертывание `IPsec Instance`:
+    ```bash
+    ./ipsec-cli-deploy.sh
+    ```
+
+7. Привязать созданную ранее таблицу маршрутизации VPC (на схеме обозначена как `ipsec-rt`) к нужным подсетям в сети `inside-net`.
+
+8. Проверить сетевую связность между локальными ресурсами (на схеме это подсети с CIDR 192.168.x.0/24) и удаленными ресурсами (на схеме это подсети с CIDR 10.10.x.0/24).
+
+9. В случае отсутствия сетевой связности между локальными и удаленными ресурсами необходимо подключиться к ВМ по SSH: 
+
+    ```bash
+    ssh oper@<public-ip-1>
+    ```
+
+    и провести диагностику состояния `IPsec` соединения с помощью команд:
+
+    ```bash
+    sudo -i
+    swanctl -l
+    swanctl -L
+    swanctl --log
+    ```
 
 ## Развертывание IPsec Instance с помощью Terraform <a id="tf"/></a>
 
-1. Загрузить развертывание из репозитория на [github.com](https://github.com/yandex-cloud-examples/yc-ipsec-instance):
-```bash
-git clone https://github.com/yandex-cloud-examples/yc-ipsec-instance.git
-```
+1. Если у вас еще нет `Terraform`, [установите его и настройте провайдер Yandex Cloud](https://yandex.cloud/docs/tutorials/infrastructure-management/terraform-quickstart#install-terraform).
 
-2. Перейти в папку с развертыванием 
-```bash
-cd yc-ipsec-instance
-```
+2. Загрузить развертывание из репозитория на [github.com](https://github.com/yandex-cloud-examples/yc-ipsec-instance):
+    ```bash
+    git clone https://github.com/yandex-cloud-examples/yc-ipsec-instance.git
+    ```
 
-3. Заполнить значения параметров развертывания в файле [terraform.tfvars](./terraform.tfvars)
+3. Перейти в папку с развертыванием 
+    ```bash
+    cd yc-ipsec-instance
+    ```
 
-4. Подготовить окружение:
+4. Заполнить значения параметров развертывания в файле [terraform.tfvars](./terraform.tfvars)
+
+5. Подготовить окружение:
     ```bash
     source env-yc.sh
     terraform init
     ```
 
-5. Выполнить развертывание `IPsec Instance`:
+6. Выполнить развертывание `IPsec Instance`:
     ```bash
     terraform apply
     ```
-6. Привязать созданную таблицу маршрутизации VPC (на схеме обозначена как `ipsec-rt`) к нужным подсетям в сети `inside-net`.
 
-7. Проверить сетевую связность между локальными ресурсами (на схеме это подсети с CIDR 192.168.x.0/24) и удаленными ресурсами (на схеме это подсети с CIDR 10.10.x.0/24).
+7. Привязать созданную таблицу маршрутизации VPC (на схеме обозначена как `ipsec-rt`) к нужным подсетям в сети `inside-net`.
 
-8. В случае отсутствия сетевой связности между локальными и удаленными ресурсами необходимо подключиться к ВМ по SSH: 
+8. Проверить сетевую связность между локальными ресурсами (на схеме это подсети с CIDR 192.168.x.0/24) и удаленными ресурсами (на схеме это подсети с CIDR 10.10.x.0/24).
 
-```bash
-ssh oper@<public-ip-1>
-```
+9. В случае отсутствия сетевой связности между локальными и удаленными ресурсами необходимо подключиться к ВМ по SSH: 
 
-и провести диагностику состояния `IPsec` соединения с помощью команд:
+    ```bash
+    ssh oper@<public-ip-1>
+    ```
 
-```bash
-sudo -i
-swanctl -l
-swanctl -L
-swanctl --log
-```
+    и провести диагностику состояния `IPsec` соединения с помощью команд:
+
+    ```bash
+    sudo -i
+    swanctl -l
+    swanctl -L
+    swanctl --log
+    ```
